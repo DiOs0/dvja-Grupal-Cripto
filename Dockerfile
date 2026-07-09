@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM eclipse-temurin:8-jdk
 MAINTAINER Abhisek Datta <abhisek@appsecco.com>
 
 RUN apt-get update
@@ -11,7 +11,8 @@ RUN mvn dependency:resolve
 
 COPY . .
 RUN mvn clean package
-RUN chmod 755 /app/scripts/start.sh
+RUN sed -i 's/\r$//' /app/scripts/start.sh
+RUN chmod +x /app/scripts/start.sh
 
 EXPOSE 8080
-CMD ["sh", "-c", "/app/scripts/start.sh"]
+CMD ["sh", "/app/scripts/start.sh"]
