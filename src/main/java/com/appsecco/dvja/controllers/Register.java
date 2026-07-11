@@ -11,6 +11,7 @@ public class Register extends BaseController {
     private String email;
     private String password;
     private String passwordConfirmation;
+    private boolean privacyAccepted;
 
     private UserRegistrationService userRegistrationService;
 
@@ -62,6 +63,14 @@ public class Register extends BaseController {
         this.userRegistrationService = userRegistrationService;
     }
 
+    public boolean isPrivacyAccepted() {
+        return privacyAccepted;
+    }
+
+    public void setPrivacyAccepted(boolean privacyAccepted) {
+        this.privacyAccepted = privacyAccepted;
+    }
+
     public void validate() {
         if(!getServletRequest().getMethod().equalsIgnoreCase("POST"))
             return;
@@ -76,6 +85,12 @@ public class Register extends BaseController {
             addFieldError("passwordConfirmation", "Password confirmation is required");
         if(!StringUtils.equals(getPassword(), getPasswordConfirmation()))
             addFieldError("password", "Password must match confirmation");
+        if (!isPrivacyAccepted()) {
+            addFieldError(
+                    "privacyAccepted",
+                    "Debe aceptar la Política de Privacidad y el tratamiento de sus datos personales"
+            );
+        }
     }
 
     public String execute() {

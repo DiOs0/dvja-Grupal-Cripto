@@ -39,11 +39,26 @@
                             name="password"
                             placeholder="Enter password"/>
                           <s:password
-                             label="Password Confirmation"
-                             name="passwordConfirmation"
-                             placeholder="Confirm password"/>
+                              label="Password Confirmation"
+                              name="passwordConfirmation"
+                              placeholder="Confirm password"/>
 
-                         <s:submit cssClass="btn btn-primary"/>
+                          <div class="checkbox" style="margin-top:15px; margin-bottom:15px;">
+                              <label>
+                                  <s:checkbox
+                                          name="privacyAccepted"
+                                          fieldValue="true"
+                                          theme="simple"/>
+
+                                  He leído y acepto la
+                                  <a href="<s:url action='privacy'/>" target="_blank">
+                                      Política de Privacidad
+                                  </a>
+                                  y autorizo el tratamiento de mis datos personales conforme a la Ley Orgánica de Protección de Datos Personales (LOPDP) del Ecuador.
+                              </label>
+                          </div>
+
+                          <s:submit cssClass="btn btn-primary"/>
                     </s:form>
 
                     <br/>

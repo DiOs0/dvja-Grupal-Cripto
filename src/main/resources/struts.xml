@@ -43,6 +43,10 @@
             <result name="success">/WEB-INF/dvja/RegistrationSuccess.jsp</result>
         </action>
 
+        <action name="privacy">
+            <result>/WEB-INF/dvja/Privacy.jsp</result>
+        </action>
+
         <action name="home" class="com.appsecco.dvja.controllers.Home">
             <interceptor-ref name="authenticationStack"/>
             <result>/WEB-INF/dvja/Home.jsp</result>
