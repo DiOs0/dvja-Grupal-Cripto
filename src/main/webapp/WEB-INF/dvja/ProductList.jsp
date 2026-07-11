@@ -20,7 +20,7 @@
 
         <s:if test="searchQuery != null">
             <p class="bg-success">
-                Listing products with <strong>search query: </strong> <%= request.getParameter("searchQuery") %>
+                Listing products with <strong>search query: </strong> <s:property value="searchQuery"/>
                 &nbsp; &nbsp;
                 <small><a href="<s:url action="listProduct"/>">
                     <i class="fa fa-remove"></i> Clear
@@ -39,7 +39,7 @@
             <s:iterator value="products">
             <tr>
                 <td><s:property value="id"/></td>
-                <td><s:property value="name" escape="false"/></td>
+                <td><s:property value="name"/></td>
                 <td><s:property value="code"/></td>
                 <td><s:property value="tags"/></td>
                 <td>
