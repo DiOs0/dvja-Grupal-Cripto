@@ -3,7 +3,7 @@ package com.appsecco.dvja.controllers;
 import com.appsecco.dvja.models.User;
 import com.appsecco.dvja.services.UserRegistrationService;
 import org.apache.commons.lang.StringUtils;
-import com.appsecco.dvja.security.AESUtil;
+
 
 public class Register extends BaseController {
 
@@ -98,12 +98,10 @@ public class Register extends BaseController {
         User user = null;
 
         try {
-            String encryptedEmail = AESUtil.encrypt(getEmail());
-
             user = userRegistrationService.register(
                     getName(),
                     getLogin(),
-                    encryptedEmail,
+                    getEmail(),
                     getPassword(),
                     getPasswordConfirmation()
             );
