@@ -134,14 +134,12 @@ public class UserService {
         return null;
     }
 
-    /*
-     * Método vulnerable.
-     * Se corregirá en la Parte 3 (SQL Injection).
-     */
+
     public User findByLoginUnsafe(String login) {
 
+        //Correccion inyeccion SQL
         Query query = entityManager.createQuery(
-                "SELECT u FROM User u WHERE u.login = '" + login + "'"
+                "SELECT u FROM User u WHERE u.login = :login"
         );
 
         List<User> resultList = query.getResultList();

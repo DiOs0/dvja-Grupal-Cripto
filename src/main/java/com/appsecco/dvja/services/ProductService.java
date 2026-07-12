@@ -47,11 +47,12 @@ public class ProductService {
         return query.getResultList();
     }
 
-
+    /*
+     * Consulta corregida mediante parámetros
+     * para evitar SQL/JPQL Injection.
+     */
     public List<Product> findContainingName(String name) {
 
-
-        //Correccion en la consulta que evita vulnerabilidades de logica (SQL injection)
         Query query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.name LIKE :name"
         );
