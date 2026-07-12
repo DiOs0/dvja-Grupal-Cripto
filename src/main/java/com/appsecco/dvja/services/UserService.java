@@ -140,8 +140,9 @@ public class UserService {
      */
     public User findByLoginUnsafe(String login) {
 
+        //Parte 3 de la fase 2: evitar riesgos logicos de igualdades
         Query query = entityManager.createQuery(
-                "SELECT u FROM User u WHERE u.login = '" + login + "'"
+                "SELECT u FROM User u WHERE u.login = :login"
         );
 
         List<User> resultList = query.getResultList();
