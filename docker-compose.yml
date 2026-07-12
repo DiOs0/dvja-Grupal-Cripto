@@ -6,6 +6,7 @@ services:
       - mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: ec95c258266b8e985848cae688effa2b
+
   app:
     build: .
     depends_on:
@@ -15,5 +16,6 @@ services:
     environment:
       MYSQL_USER: root
       MYSQL_PASSWORD: ec95c258266b8e985848cae688effa2b
+      DVJA_AES_KEY: ${DVJA_AES_KEY}
 volumes:
   mysql:

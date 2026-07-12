@@ -3,6 +3,7 @@ package com.appsecco.dvja.controllers;
 import com.appsecco.dvja.models.User;
 import com.appsecco.dvja.services.UserRegistrationService;
 import org.apache.commons.lang.StringUtils;
+import com.appsecco.dvja.security.AESUtil;
 
 public class Register extends BaseController {
 
@@ -97,14 +98,20 @@ public class Register extends BaseController {
         User user = null;
 
         try {
-            user = userRegistrationService.register(getName(), getLogin(), getEmail(),
-                    getPassword(), getPasswordConfirmation());
-        }
-        catch(Exception e) {
+            String encryptedEmail = AESUtil.encrypt(getEmail());
+
+            user = userRegistrationService.register(
+                    getName(),
+                    getLogin(),
+                    encryptedEmail,
+                    getPassword(),
+                    getPasswordConfirmation()
+            );
+        } catch (Exception e) {
             addActionError("Error Occurred: " + e.getMessage());
         }
 
-        if(user != null) {
+        if (user != null) {
             return SUCCESS;
         }
 
