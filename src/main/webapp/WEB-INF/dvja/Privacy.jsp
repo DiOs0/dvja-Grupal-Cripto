@@ -51,6 +51,12 @@
         El usuario podrá solicitar el acceso, rectificación, actualización
         o eliminación de sus datos personales cuando corresponda.
     </p>
+    <p>
+        Al registrarse en la aplicación, el usuario manifiesta su consentimiento
+        libre, específico, informado e inequívoco para el tratamiento de sus datos
+        personales conforme a la Ley Orgánica de Protección de Datos Personales
+        (LOPDP) del Ecuador.
+    </p>
 
     <br>
 

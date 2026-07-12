@@ -58,7 +58,9 @@
                               </label>
                           </div>
 
-                          <s:submit cssClass="btn btn-primary"/>
+                          <s:submit
+                                  value="Registrarse"
+                                  cssClass="btn btn-primary"/>
                     </s:form>
 
                     <br/>
