@@ -14,17 +14,28 @@
         <interceptors>
             <interceptor name="authenticationInterceptor"
                          class="com.appsecco.dvja.interceptors.AuthenticationInterceptor"/>
+
+            <interceptor name="roleAuthorizationInterceptor"
+                         class="com.appsecco.dvja.interceptors.RoleAuthorizationInterceptor"/>
             
             <interceptor-stack name="authenticationStack">
                 <interceptor-ref name="authenticationInterceptor"/>
                 <interceptor-ref name="defaultStack"/>
             </interceptor-stack>
+
+            <interceptor-stack name="roleAuthorizationStack">
+                <interceptor-ref name="authenticationInterceptor"/>
+                <interceptor-ref name="roleAuthorizationInterceptor"/>
+                <interceptor-ref name="defaultStack"/>
+            </interceptor-stack>
+
         </interceptors>
 
         <default-action-ref name="home"/>
 
         <global-results>
             <result name="login">/WEB-INF/dvja/Login.jsp</result>
+            <result name="accessDenied">/WEB-INF/dvja/AccessDenied.jsp</result>
         </global-results>
 
         <action name="login" class="com.appsecco.dvja.controllers.Login">
@@ -58,13 +69,23 @@
         </action>
 
         <action name="userSearch" class="com.appsecco.dvja.controllers.UserAction" method="search">
-            <interceptor-ref name="authenticationStack"/>
+            <interceptor-ref name="roleAuthorizationStack">
+                <param name="roleAuthorizationInterceptor.allowedRoles">
+                    admin,auditor
+                </param>
+            </interceptor-ref>
+
             <result name="input">/WEB-INF/dvja/UserSearch.jsp</result>
             <result>/WEB-INF/dvja/UserSearch.jsp</result>
         </action>
 
         <action name="editUser" class="com.appsecco.dvja.controllers.UserAction" method="edit">
-            <interceptor-ref name="authenticationStack"/>
+            <interceptor-ref name="roleAuthorizationStack">
+                <param name="roleAuthorizationInterceptor.allowedRoles">
+                    admin
+                </param>
+            </interceptor-ref>
+
             <result name="input">/WEB-INF/dvja/UserEdit.jsp</result>
             <result>/WEB-INF/dvja/Home.jsp</result>
         </action>

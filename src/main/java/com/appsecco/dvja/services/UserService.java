@@ -69,8 +69,14 @@ public class UserService {
 
         User user = entityManager.find(User.class, id);
 
-        if (user != null && user.getEmail() != null) {
-            user.setEmail(AESUtil.decrypt(user.getEmail()));
+        if (user != null) {
+
+
+            entityManager.clear();
+
+            if (user.getEmail() != null) {
+                user.setEmail(AESUtil.decrypt(user.getEmail()));
+            }
         }
 
         return user;
@@ -92,21 +98,22 @@ public class UserService {
 
 
      //Descifrar los correos de toda la lista.
-    public List<User> findAllUsers() {
+     public List<User> findAllUsers() {
 
-        Query query = entityManager.createQuery("SELECT u FROM User u");
+         Query query = entityManager.createQuery("SELECT u FROM User u");
 
-        List<User> resultList = query.getResultList();
+         List<User> resultList = query.getResultList();
 
-        for (User user : resultList) {
+         entityManager.clear();
 
-            if (user.getEmail() != null) {
-                user.setEmail(AESUtil.decrypt(user.getEmail()));
-            }
-        }
+         for (User user : resultList) {
+             if (user.getEmail() != null) {
+                 user.setEmail(AESUtil.decrypt(user.getEmail()));
+             }
+         }
 
-        return resultList;
-    }
+         return resultList;
+     }
 
 
      //Buscar por login y devolver el correo descifrado.
@@ -121,14 +128,7 @@ public class UserService {
         List<User> resultList = query.getResultList();
 
         if (resultList.size() > 0) {
-
-            User user = resultList.get(0);
-
-            if (user.getEmail() != null) {
-                user.setEmail(AESUtil.decrypt(user.getEmail()));
-            }
-
-            return user;
+            return resultList.get(0);
         }
 
         return null;
@@ -140,14 +140,25 @@ public class UserService {
      */
     public User findByLoginUnsafe(String login) {
 
+        entityManager.clear();
+
         Query query = entityManager.createQuery(
                 "SELECT u FROM User u WHERE u.login = '" + login + "'"
         );
 
         List<User> resultList = query.getResultList();
 
-        if (resultList.size() > 0)
-            return resultList.get(0);
+        if (resultList.size() > 0) {
+            User user = resultList.get(0);
+
+            entityManager.clear();
+
+            if (user.getEmail() != null) {
+                user.setEmail(AESUtil.decrypt(user.getEmail()));
+            }
+
+            return user;
+        }
 
         return null;
     }

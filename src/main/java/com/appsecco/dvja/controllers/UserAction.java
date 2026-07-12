@@ -71,31 +71,79 @@ public class UserAction extends BaseController {
     }
 
     public String edit() {
-        if(sessionGetUser() != null) {
-            setUser(sessionGetUser());
-            setUserId(getUser().getId());
-            setEmail(getUser().getEmail());
+
+        User sessionUser = sessionGetUser();
+
+        if (sessionUser == null) {
+            return LOGIN;
         }
 
-        if(StringUtils.isEmpty(getPassword()) || StringUtils.isEmpty(getPasswordConfirmation()))
-            return INPUT;
+        // Al abrir la página, cargar al usuario desde el servicio
+        // para obtener el correo descifrado.
+        if ("GET".equalsIgnoreCase(getServletRequest().getMethod())) {
 
-        if(! getPassword().equals(getPasswordConfirmation())) {
-            addFieldError("password", "does not match confirmation");
+            user = userService.find(sessionUser.getId());
+
+            if (user == null) {
+                addActionError("No se pudo encontrar el usuario");
+                return INPUT;
+            }
+
+            setUserId(user.getId());
+            setEmail(user.getEmail());
+
             return INPUT;
+        }
+
+        // En POST se utiliza el ID del usuario autenticado.
+        setUserId(sessionUser.getId());
+
+        boolean passwordProvided =
+                !StringUtils.isEmpty(getPassword()) ||
+                        !StringUtils.isEmpty(getPasswordConfirmation());
+
+        if (passwordProvided) {
+
+            if (StringUtils.isEmpty(getPassword()) ||
+                    StringUtils.isEmpty(getPasswordConfirmation())) {
+
+                addFieldError(
+                        "password",
+                        "Debe ingresar y confirmar la nueva contraseña"
+                );
+
+                return INPUT;
+            }
+
+            if (!getPassword().equals(getPasswordConfirmation())) {
+
+                addFieldError(
+                        "password",
+                        "La contraseña no coincide con la confirmación"
+                );
+
+                return INPUT;
+            }
         }
 
         user = userService.find(getUserId());
-        if(user == null) {
-            addActionError("Failed to find user with id: " + getUserId());
+
+        if (user == null) {
+            addActionError(
+                    "No se pudo encontrar el usuario con id: " + getUserId()
+            );
+
             return INPUT;
         }
 
-        if(! StringUtils.isEmpty(getEmail()))
+        if (!StringUtils.isEmpty(getEmail())) {
             user.setEmail(getEmail());
+        }
 
-        user.setPassword(getPassword());
-        user.setId(getUserId());
+        if (passwordProvided) {
+            user.setPassword(getPassword());
+        }
+
         userService.save(user);
 
         return SUCCESS;
