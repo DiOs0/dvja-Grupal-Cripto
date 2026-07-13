@@ -69,7 +69,14 @@ public class UserService {
 
         User user = entityManager.find(User.class, id);
 
-        if (user != null && user.getEmail() != null) {
+        if (user == null) {
+            return null;
+        }
+
+        // Desvincula la entidad antes de modificar el correo
+        entityManager.clear();
+
+        if (user.getEmail() != null) {
             user.setEmail(AESUtil.decrypt(user.getEmail()));
         }
 
@@ -123,6 +130,7 @@ public class UserService {
         if (resultList.size() > 0) {
 
             User user = resultList.get(0);
+            entityManager.clear();
 
             if (user.getEmail() != null) {
                 user.setEmail(AESUtil.decrypt(user.getEmail()));
@@ -137,15 +145,26 @@ public class UserService {
 
     public User findByLoginUnsafe(String login) {
 
-        //Correccion inyeccion SQL
         Query query = entityManager.createQuery(
                 "SELECT u FROM User u WHERE u.login = :login"
         );
 
+        query.setParameter("login", login);
+
         List<User> resultList = query.getResultList();
 
-        if (resultList.size() > 0)
-            return resultList.get(0);
+        if (resultList.size() > 0) {
+
+            User user = resultList.get(0);
+
+            entityManager.clear();
+
+            if (user.getEmail() != null) {
+                user.setEmail(AESUtil.decrypt(user.getEmail()));
+            }
+
+            return user;
+        }
 
         return null;
     }
