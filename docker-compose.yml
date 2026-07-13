@@ -1,21 +1,41 @@
-version: '2'
+version: '3.8'
+
 services:
   mysql:
-    image: mysql:5.5
+    image: mysql:8.0
+    # Usamos un volumen con nombre explícito
     volumes:
-      - mysql:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD: ec95c258266b8e985848cae688effa2b
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      # MYSQL_DATABASE: dvja # Forzamos a que MySQL cree la base vacía automáticamente
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: ${DB_APP_PASSWORD}
+    # ESTO ES CLAVE: Le dice a Docker que verifique si MySQL ya está listo para recibir conexiones
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
 
   app:
     build: .
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy # La app ya no arranca hasta que MySQL esté 100% listo
     ports:
       - "8080:8080"
     environment:
-      MYSQL_USER: root
-      MYSQL_PASSWORD: ec95c258266b8e985848cae688effa2b
+      # Volvemos a las variables originales pero conectadas a nuestro .env seguro
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: ${DB_APP_PASSWORD}
       DVJA_AES_KEY: ${DVJA_AES_KEY}
+    security_opt:
+      - no-new-privileges:true
+    # NOTA: Retiramos cap_drop y user: "1000:1000" de aquí porque rompían el DNS.
+    # La mitigación de usuario root se debe mantener SÓLO en el archivo Dockerfile.
+
 volumes:
-  mysql:
+  mysql_data:
